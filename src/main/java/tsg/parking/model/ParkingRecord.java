@@ -46,11 +46,11 @@ public class ParkingRecord {
     private Long totalDuration;
 
     @Setter
-    @Column(name = "amount_without_discount", nullable = false, precision = 14, scale = 2)
+    @Column(name = "amount_without_discount", precision = 14, scale = 2)
     private BigDecimal amountWithoutDiscount;
 
     @Setter
-    @Column(name = "total_amount", nullable = false, precision = 14, scale = 2)
+    @Column(name = "total_amount", precision = 14, scale = 2)
     private BigDecimal totalAmount;
 
     @Setter

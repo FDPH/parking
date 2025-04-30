@@ -18,7 +18,7 @@ public class ParkingSlotService {
 
     @Transactional
     public ParkingSlot findAvailableSlotByVehicleType(VehicleType vehicleType) {
-        return parkingSlotRepository.findByVehicleTypeAndIsAvailableTrue(vehicleType)
+        return parkingSlotRepository.findFirstByVehicleTypeAndIsAvailableTrue(vehicleType)
                 .orElseThrow(() -> new NotSlotsAvailableForThisVehicleType("No available parking slots for this vehicle type"));
     }
 }

@@ -2,13 +2,14 @@ package tsg.parking.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tsg.parking.dto.request.RegisterVehicleRequest;
+import tsg.parking.dto.ParkingRecordDto;
 import tsg.parking.dto.request.RecordDeleteRequest;
+import tsg.parking.dto.request.RegisterVehicleRequest;
 import tsg.parking.dto.request.VehicleUpdateRequest;
+import tsg.parking.dto.response.RecordsResponse;
 import tsg.parking.dto.response.VehicleEntryResponse;
 import tsg.parking.dto.response.VehicleExitResponse;
 import tsg.parking.dto.response.VehicleUpdatedResponse;
-import tsg.parking.dto.response.RecordsResponse;
 import tsg.parking.exception.NotActiveVehiclesAtTheMoment;
 import tsg.parking.exception.VehicleAlreadyParked;
 import tsg.parking.exception.VehicleNotRegistered;
@@ -19,6 +20,7 @@ import tsg.parking.model.Vehicle;
 import tsg.parking.repository.VehicleRepository;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -70,6 +72,7 @@ public class VehicleService {
                 });
 
         Price price = priceService.getPriceByVehicleType(registerVehicleRequest.vehicleType());
+        slot.setAvailable(false);
         ParkingRecord parkingRecord = parkingRecordService.saveNewParkingRecord(vehicle, slot, price.getPricePerHour());
 
         return new VehicleEntryResponse(
@@ -92,7 +95,8 @@ public class VehicleService {
     @Transactional
     public VehicleExitResponse exitVehicle(String licencePlate) {
         ParkingRecord parkingRecord = parkingRecordService.findActiveRecordByVehicle(licencePlate);
-
+        parkingRecord.getParkingSlot().setAvailable(true);
+        parkingRecord.setParked(false);
         setTotalTime(parkingRecord);
         setTotalAmount(parkingRecord);
 
@@ -120,7 +124,11 @@ public class VehicleService {
         if (activeRecords == null || activeRecords.isEmpty()) {
             throw new NotActiveVehiclesAtTheMoment("No active vehicles at the moment");
         }
-        return new RecordsResponse(activeRecords);
+        List<ParkingRecordDto> dtos = activeRecords.stream()
+                .map(ParkingRecordDto::from)
+                .toList();
+
+        return new RecordsResponse(dtos);
     }
 
     /**
@@ -155,15 +163,21 @@ public class VehicleService {
         parkingRecord.setExitTime(exitTime);
         Duration duration = Duration.between(parkingRecord.getEntryTime(), exitTime);
         long minutes = duration.toMinutes();
-        long hours = (long) Math.ceil(minutes / 60.0);
-        parkingRecord.setTotalDuration(hours);
+        parkingRecord.setTotalDuration(minutes);
     }
 
     public void setTotalAmount(ParkingRecord parkingRecord) {
-        BigDecimal total = parkingRecord.getPricePerHour().multiply(BigDecimal.valueOf(parkingRecord.getTotalDuration()));
+
+        BigDecimal pricePerHour = parkingRecord.getPricePerHour();
+        BigDecimal priceperMinute = pricePerHour.divide(new BigDecimal("60"), 2, RoundingMode.HALF_UP );
+        BigDecimal totalMinutes = BigDecimal.valueOf(parkingRecord.getTotalDuration());
+        BigDecimal total = priceperMinute.multiply(totalMinutes);
+
         if (parkingRecord.isHasDiscount()) {
             BigDecimal discount = total.multiply(new BigDecimal("0.25"));
             parkingRecord.setTotalAmount(total.subtract(discount));
+        }else {
+            parkingRecord.setTotalAmount(total);
         }
     }
 

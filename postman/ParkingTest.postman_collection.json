@@ -7,10 +7,80 @@
 	},
 	"item": [
 		{
-			"name": "New Request",
+			"name": "IngresarNuevoVehiculo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"licencePlate\": \"AXX88F\",\r\n  \"vehicleType\": \"MOTORCYCLE\",\r\n  \"fuelType\": \"ELECTRIC\",\r\n  \"locationInParking\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/vehicles/entry",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"vehicles",
+						"entry"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SalidaVehiculo",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/exit/AXX88F",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"exit",
+						"AXX88F"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ListarVehiculosDisponibles",
 			"request": {
 				"method": "GET",
 				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "CerrarDia",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/reports/closeday",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"reports",
+						"closeday"
+					]
+				}
 			},
 			"response": []
 		}

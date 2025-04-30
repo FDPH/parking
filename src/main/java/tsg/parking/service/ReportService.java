@@ -2,6 +2,7 @@ package tsg.parking.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tsg.parking.dto.ParkingRecordDto;
 import tsg.parking.dto.response.ReportResponse;
 import tsg.parking.exception.NotActiveVehiclesAtTheMoment;
 import tsg.parking.model.ParkingRecord;
@@ -43,10 +44,14 @@ public class ReportService {
         }
         totalAmountEarnedToday = totalAmountEarnedToday.add(totalAmountFromPendingVehicles);
 
+        List<ParkingRecordDto> pendingDtos = pendingVehiclesToPay.stream()
+                .map(ParkingRecordDto::from)
+                .toList();
+
         return new ReportResponse(
                 totalAmountEarnedToday,
                 totalAmountFromPendingVehicles,
-                pendingVehiclesToPay
+                pendingDtos
         );
     }
 }
