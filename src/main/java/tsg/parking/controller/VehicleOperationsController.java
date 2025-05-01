@@ -72,7 +72,6 @@ public class VehicleOperationsController {
     @ApiResponse(responseCode = "404", description = "Vehicle not found")
     public ResponseEntity<Void> softDeleteVehicle(@PathVariable String licencePlate, @RequestBody @Valid RecordDeleteRequest recordDeleteRequest) {
         vehicleService.softDeleteRecord(licencePlate, recordDeleteRequest);
-
         return ResponseEntity.ok().build();
     }
 

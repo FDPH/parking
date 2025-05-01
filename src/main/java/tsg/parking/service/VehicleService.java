@@ -153,9 +153,7 @@ public class VehicleService {
      */
     public void softDeleteRecord(String licencePlat, RecordDeleteRequest recordDeleteRequest) {
         ParkingRecord activeRecordByVehicle = parkingRecordService.findActiveRecordByVehicle(licencePlat);
-
         parkingRecordService.softDeleteRecord(activeRecordByVehicle, recordDeleteRequest.reason());
-
     }
 
     public void setTotalTime(ParkingRecord parkingRecord) {
@@ -172,6 +170,7 @@ public class VehicleService {
         BigDecimal priceperMinute = pricePerHour.divide(new BigDecimal("60"), 2, RoundingMode.HALF_UP );
         BigDecimal totalMinutes = BigDecimal.valueOf(parkingRecord.getTotalDuration());
         BigDecimal total = priceperMinute.multiply(totalMinutes);
+        parkingRecord.setAmountWithoutDiscount(total);
 
         if (parkingRecord.isHasDiscount()) {
             BigDecimal discount = total.multiply(new BigDecimal("0.25"));
@@ -180,6 +179,4 @@ public class VehicleService {
             parkingRecord.setTotalAmount(total);
         }
     }
-
-
 }

@@ -63,6 +63,7 @@ public class ParkingRecord {
 
     @Setter
     @Column(name = "deleted_reason")
+    @Enumerated(EnumType.STRING)
     private DeletionReason deletedReason;
 
     @ManyToOne(fetch = FetchType.LAZY)

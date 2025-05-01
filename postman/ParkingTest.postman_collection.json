@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"licencePlate\": \"AXX88F\",\r\n  \"vehicleType\": \"MOTORCYCLE\",\r\n  \"fuelType\": \"ELECTRIC\",\r\n  \"locationInParking\": \"string\"\r\n}",
+					"raw": "{\r\n  \"licencePlate\": \"ASD123\",\r\n  \"vehicleType\": \"MOTORCYCLE\",\r\n  \"fuelType\": \"ELECTRIC\",\r\n  \"locationInParking\": \"string\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -41,15 +41,16 @@
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "localhost:8080/api/exit/AXX88F",
+					"raw": "localhost:8080/api/vehicles/exit/ASD123",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"api",
+						"vehicles",
 						"exit",
-						"AXX88F"
+						"ASD123"
 					]
 				}
 			},
@@ -59,7 +60,18 @@
 			"name": "ListarVehiculosDisponibles",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/vehicles",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"vehicles"
+					]
+				}
 			},
 			"response": []
 		},
@@ -79,6 +91,36 @@
 						"api",
 						"reports",
 						"closeday"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteRecord",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"reason\": \"OTHER\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/vehicles/ASD123/delete",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"vehicles",
+						"ASD123",
+						"delete"
 					]
 				}
 			},
